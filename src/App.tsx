@@ -140,6 +140,7 @@ export default function App() {
                   Let’s Connect <ArrowUpRight size={17} />
                 </a>
               </div>
+              <MusicPlayer suppressed={Boolean(selectedCertificate) || mobileMenuOpen} />
             </div>
             <HeroVisual />
           </div>
@@ -504,8 +505,7 @@ export default function App() {
           </a>
         </div>
       </footer>
-      <PortfolioCompanion suppressed={Boolean(selectedCertificate) || mobileMenuOpen} />
-      <MusicPlayer suppressed={Boolean(selectedCertificate) || mobileMenuOpen} />
+      <PortfolioCompanion />
       {selectedCertificate && (
         <CertificateDialog
           certificate={selectedCertificate}

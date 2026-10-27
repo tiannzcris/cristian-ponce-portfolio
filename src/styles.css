@@ -138,6 +138,10 @@
     padding-block: 25px 30px;
     border-top: 1px solid var(--line);
     position: relative;
+    touch-action: pan-y pinch-zoom;
+  }
+  .technology-marquee:focus-visible {
+    outline-offset: -3px;
   }
   .marquee-heading {
     display: flex;
@@ -151,25 +155,6 @@
     font: 500 10px var(--heading);
     letter-spacing: 1.5px;
     text-transform: uppercase;
-  }
-  .marquee-control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 36px;
-    padding: 6px 12px;
-    background: var(--icon-bg);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    color: var(--muted);
-    font-size: 10px;
-  }
-  .marquee-control:hover {
-    background: var(--icon-hover);
-  }
-  .marquee-control:disabled {
-    cursor: default;
   }
   .marquee-viewport {
     overflow: hidden;
@@ -1432,6 +1417,8 @@
     align-items: center;
     gap: 32px;
     padding-block: 30px;
+    /* Reserve a static rail for the fixed companion, including at the page bottom. */
+    padding-right: var(--companion-width);
   }
   .site-footer .wordmark {
     font-size: 30px;

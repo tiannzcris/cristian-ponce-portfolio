@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
-import { Pause, Play } from 'lucide-react'
 import { technologies } from '../content'
 import type { Technology } from '../content'
 
@@ -21,15 +20,41 @@ export default function TechnologyMarquee() {
   const sequence = useRef<HTMLDivElement>(null)
   const track = useRef<HTMLDivElement>(null)
   const animation = useRef<Animation | null>(null)
+  const contacts = useRef(new Set<number>())
   const [repetitions, setRepetitions] = useState(1)
-  const [paused, setPaused] = useState(false)
   const [hovered, setHovered] = useState(false)
+  const [touching, setTouching] = useState(false)
   const [focused, setFocused] = useState(false)
   const [reduced, setReduced] = useState(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
-  const shouldPause = paused || hovered || focused || reduced
+  const shouldPause = hovered || touching || focused || reduced
   const pauseRef = useRef(shouldPause)
+
+  useEffect(() => {
+    // Capture releases outside the strip too. Native scrolling may cancel a touch pointer.
+    const release = (event: PointerEvent) => {
+      if (contacts.current.delete(event.pointerId)) setTouching(contacts.current.size > 0)
+    }
+    const clear = () => {
+      contacts.current.clear()
+      setTouching(false)
+      setHovered(false)
+    }
+    const visibility = () => {
+      if (document.hidden) clear()
+    }
+    window.addEventListener('pointerup', release, { capture: true, passive: true })
+    window.addEventListener('pointercancel', release, { capture: true, passive: true })
+    window.addEventListener('blur', clear)
+    document.addEventListener('visibilitychange', visibility)
+    return () => {
+      window.removeEventListener('pointerup', release, true)
+      window.removeEventListener('pointercancel', release, true)
+      window.removeEventListener('blur', clear)
+      document.removeEventListener('visibilitychange', visibility)
+    }
+  }, [])
 
   useEffect(() => {
     pauseRef.current = shouldPause
@@ -94,28 +119,37 @@ export default function TechnologyMarquee() {
     <section
       className="technology-marquee"
       aria-labelledby="technology-title"
+      aria-describedby="technology-instructions"
+      tabIndex={reduced ? undefined : 0}
       data-paused={shouldPause}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setFocused(true)}
+      onPointerEnter={(event) => {
+        if (event.pointerType === 'mouse') setHovered(true)
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === 'mouse') setHovered(false)
+      }}
+      onPointerDown={(event) => {
+        if (event.pointerType === 'mouse') return
+        contacts.current.add(event.pointerId)
+        setTouching(true)
+        setFocused(false)
+      }}
+      onFocusCapture={(event) => {
+        // A touch can focus the region; only keyboard focus should keep it paused on release.
+        setFocused(event.target.matches(':focus-visible'))
+      }}
+      onKeyDownCapture={() => setFocused(true)}
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
       }}
     >
       <div className="marquee-heading container">
         <h2 id="technology-title">Technologies I work with</h2>
-        <button
-          type="button"
-          className="marquee-control"
-          aria-label={paused ? 'Resume technology marquee' : 'Pause technology marquee'}
-          aria-pressed={paused}
-          disabled={reduced}
-          onClick={() => setPaused(!paused)}
-        >
-          {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
-          <span>{reduced ? 'Motion reduced' : paused ? 'Resume' : 'Pause'}</span>
-        </button>
       </div>
+      <p id="technology-instructions" className="sr-only">
+        Hover, hold a touch, or focus this region with the keyboard to pause the moving list. Move
+        away, release your touch, or move keyboard focus away to resume.
+      </p>
       <ul className="technology-accessible-list" role="list" aria-label="Technologies I work with">
         {technologies.map((technology) => (
           <li key={technology.name}>

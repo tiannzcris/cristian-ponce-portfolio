@@ -1,15 +1,18 @@
+@layer base {
+  :root {
+    --companion-width: 156px;
+  }
+}
 @layer components {
   .companion-dock {
     position: fixed;
-    bottom: calc(var(--dock-bottom, 12px) + env(safe-area-inset-bottom, 0px));
-    right: calc(var(--dock-right, 12px) + env(safe-area-inset-right, 0px));
-    width: 156px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    width: var(--companion-width);
     z-index: 20;
     pointer-events: none;
   }
-  .companion-dock[hidden],
-  .companion-dock [hidden],
-  .music-player[hidden] {
+  .music-widget[hidden] {
     display: none !important;
   }
   .companion-stage {
@@ -71,76 +74,75 @@
     outline-offset: -3px;
     border-radius: 16px;
   }
-  .companion-controls {
+  .music-player {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: max-content;
-    margin: 0 auto;
-    padding: 2px;
-    gap: 1px;
-    border-radius: 30px;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: fit-content;
+    max-width: 100%;
     background: var(--header-bg);
+    padding: 6px;
     border: 1px solid var(--line-strong);
-    box-shadow: 0 3px 14px var(--shadow);
-    pointer-events: auto;
+    border-radius: 12px;
   }
-  .companion-controls .icon-button {
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border-radius: 50%;
+  .music-widget {
+    margin-top: 20px;
+    max-width: 100%;
+  }
+  .music-play {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    background: var(--icon-bg);
     color: var(--text-strong);
+    font-size: 12px;
   }
-  .companion-controls .icon-button:hover {
+  .music-play:hover {
     background: var(--icon-hover);
   }
-  .companion-controls .icon-button:disabled {
+  .music-play:disabled {
     color: var(--subtle);
-    cursor: default;
-  }
-  .companion-restore {
-    margin-left: auto;
-    width: 44px;
-    height: 44px;
-    pointer-events: auto;
-    background: var(--header-bg);
-    border: 1px solid var(--line-strong);
-    box-shadow: 0 3px 14px var(--shadow);
-    border-radius: 50%;
-  }
-  .music-player {
-    position: fixed;
-    left: 12px;
-    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--header-bg);
-    padding: 4px 10px 4px 4px;
-    border: 1px solid var(--line-strong);
-    border-radius: 26px;
-    z-index: 20;
+    cursor: wait;
   }
   .music-player .icon-button {
-    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 7px;
+  }
+  .music-volume {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 11px;
+  }
+  .music-volume > span:last-child {
+    min-width: 3ch;
+    font-variant-numeric: tabular-nums;
   }
   .music-player input {
     width: 70px;
     accent-color: var(--accent);
   }
+  .music-status {
+    min-height: 1.6em;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
 }
 @layer responsive {
   @media (max-width: 650px) {
-    .companion-dock {
-      width: 108px;
+    :root {
+      --companion-width: 108px;
     }
     .companion-stage {
       height: 120px;
-    }
-    .companion-controls .icon-button {
-      width: 40px;
-      height: 40px;
     }
   }
 }

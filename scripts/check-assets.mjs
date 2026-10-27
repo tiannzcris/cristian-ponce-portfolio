@@ -41,18 +41,17 @@ if (original) {
 }
 const ignored = await readFile('.gitignore', 'utf8')
 assert.ok(
-  ignored.split(/\r?\n/).includes('public/audio/background.mp3'),
-  'Private development audio must be Git-ignored',
+  !ignored.split(/\r?\n/).includes('public/audio/background.mp3'),
+  'The supplied music track must be eligible for Git',
 )
 assert.ok(
-  (await readFile('.vercelignore', 'utf8')).split(/\r?\n/).includes('public/audio/background.mp3'),
-  'Private development audio must be excluded from Vercel uploads',
+  !(await readFile('.vercelignore', 'utf8')).split(/\r?\n/).includes('public/audio/background.mp3'),
+  'The supplied music track must be included in Vercel uploads',
 )
-assert.ok(
-  !(await files('dist')).some((file) =>
-    file.replaceAll('\\', '/').endsWith('/audio/background.mp3'),
-  ),
-  'Private test MP3 must not be present in a production build',
+assert.deepEqual(
+  await readFile('dist/audio/background.mp3'),
+  await readFile('public/audio/background.mp3'),
+  'Production must contain an unchanged copy of the supplied MP3',
 )
 assert.ok(ignored.split(/\r?\n/).includes('.private/'))
 console.log(

@@ -1,5 +1,9 @@
 # Asset inventory
 
+## Music
+
+The user-supplied `public/audio/background.mp3` (5,292,918 bytes) is the only music track. It is configured for development and production and copied unchanged to `dist/audio/background.mp3`. No additional audio was downloaded. The asset and audio checks compare the production copy with the source file.
+
 ## Technology logos
 
 `public/icons/technologies/` contains seventeen local SVG assets for PHP, Laravel, HTML, CSS, JavaScript, React, C#, .NET, MySQL, Microsoft SQL Server, MongoDB, Express, Node.js, Flutter, Dart, Git, and GitHub. ASP.NET MVC and NativePHP use clear text labels in the marquee rather than an unverified logo. The SVG data comes from the installed Devicon/Devicon Plain Iconify packages; `scripts/prepare-tech-icons.mjs` regenerates the files. These are CSS masks with theme-aware colors, so logos retain legibility in either palette. The Devicon MIT notice is included at `public/icons/technologies/LICENSE.txt`. Sources: [Devicon](https://github.com/devicons/devicon), [MIT license](https://github.com/devicons/devicon/blob/master/LICENSE).

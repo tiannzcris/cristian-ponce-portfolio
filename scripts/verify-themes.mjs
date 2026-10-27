@@ -78,6 +78,102 @@ async function audit(page, name) {
     name,
   )
 }
+
+async function assertMarqueeState(page, state) {
+  await page.waitForFunction(
+    (state) => document.querySelector('.marquee-track').getAnimations()[0]?.playState === state,
+    state,
+  )
+}
+
+async function assertHeldPosition(page) {
+  const time = await page.locator('.marquee-track').evaluate(async (el) => {
+    window.testMarqueeAnimation = el.getAnimations()[0]
+    await window.testMarqueeAnimation.ready
+    return window.testMarqueeAnimation.currentTime
+  })
+  await page.waitForTimeout(100)
+  assert.equal(
+    await page.locator('.marquee-track').evaluate((el) => el.getAnimations()[0].currentTime),
+    time,
+    'Paused marquee holds its exact position',
+  )
+  return time
+}
+
+async function assertMarqueeResumed(page, time) {
+  await assertMarqueeState(page, 'running')
+  assert.ok(
+    await page
+      .locator('.marquee-track')
+      .evaluate((el) => el.getAnimations()[0] === window.testMarqueeAnimation),
+    'Resume reuses the same animation',
+  )
+  const resumed = await page
+    .locator('.marquee-track')
+    .evaluate((el) => el.getAnimations()[0].currentTime)
+  assert.ok(
+    resumed >= time - 1 && resumed < time + 500,
+    `Resume continues from ${time}, received ${resumed}`,
+  )
+}
+
+async function checkTouchMarquee(page, context) {
+  const cdp = await context.newCDPSession(page)
+  await page.locator('.technology-marquee').scrollIntoViewIfNeeded()
+  const box = await page.locator('.marquee-viewport').boundingBox()
+  const point = {
+    x: Math.round(box.x + box.width * 0.4),
+    y: Math.round(box.y + box.height / 2),
+    id: 1,
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] })
+  await assertMarqueeState(page, 'paused')
+  const held = await assertHeldPosition(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await assertMarqueeResumed(page, held)
+
+  // Exercise release/cancel delivery outside the section, where a component-only handler misses it.
+  for (const type of ['pointerup', 'pointercancel']) {
+    await page
+      .locator('.technology-marquee')
+      .dispatchEvent('pointerdown', { pointerId: 42, pointerType: 'touch', bubbles: true })
+    await assertMarqueeState(page, 'paused')
+    const stopped = await assertHeldPosition(page)
+    await page.evaluate(
+      (type) =>
+        document.body.dispatchEvent(
+          new PointerEvent(type, { pointerId: 42, pointerType: 'touch', bubbles: true }),
+        ),
+      type,
+    )
+    await assertMarqueeResumed(page, stopped)
+  }
+
+  const scrollBefore = await page.evaluate(() => scrollY)
+  await page.evaluate(() => {
+    window.testTouchCancels = 0
+    document.addEventListener('pointercancel', () => window.testTouchCancels++, { once: true })
+  })
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] })
+  await assertMarqueeState(page, 'paused')
+  for (const offset of [25, 65, 110, 160]) {
+    await cdp.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ ...point, y: point.y - offset }],
+    })
+    await page.waitForTimeout(25)
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await page.waitForFunction((before) => scrollY > before + 30, scrollBefore)
+  await assertMarqueeState(page, 'running')
+  assert.ok(
+    await page.evaluate(() => window.testTouchCancels > 0),
+    'Native vertical panning cancels the pointer and resumes the marquee',
+  )
+  await cdp.detach()
+}
+
 try {
   for (const theme of ['light', 'dark']) {
     for (const width of [360, 1440]) {
@@ -127,30 +223,28 @@ try {
         )
       })
       assert.ok(logoStatus.every((code) => code === 200))
-      const pause = page.getByRole('button', { name: 'Pause technology marquee' })
-      await pause.click()
-      assert.equal(
-        await page.locator('.marquee-track').evaluate((el) => el.getAnimations()[0].playState),
-        'paused',
-      )
-      await page.getByRole('button', { name: 'Resume technology marquee' }).click()
+      assert.equal(await page.locator('.technology-marquee button').count(), 0)
       await page.mouse.move(0, 0)
       await page.evaluate(() => document.activeElement.blur())
-      await page.waitForFunction(
-        () => document.querySelector('.marquee-track').getAnimations()[0].playState === 'running',
+      await assertMarqueeState(page, 'running')
+      if (width === 360) await checkTouchMarquee(page, context)
+      else {
+        await page.locator('.marquee-viewport').hover()
+        await assertMarqueeState(page, 'paused')
+        const held = await assertHeldPosition(page)
+        await page.mouse.move(0, 0)
+        await assertMarqueeResumed(page, held)
+      }
+      await page.locator('.scroll-cue').focus()
+      await page.keyboard.press('Tab')
+      assert.ok(
+        await page.locator('.technology-marquee').evaluate((el) => el === document.activeElement),
+        'The marquee is keyboard focusable',
       )
-      await page.locator('.marquee-viewport').hover()
-      assert.equal(
-        await page.locator('.marquee-track').evaluate((el) => el.getAnimations()[0].playState),
-        'paused',
-      )
-      await page.mouse.move(0, 0)
-      await pause.focus()
-      assert.equal(
-        await page.locator('.marquee-track').evaluate((el) => el.getAnimations()[0].playState),
-        'paused',
-      )
-      await page.evaluate(() => document.activeElement.blur())
+      await assertMarqueeState(page, 'paused')
+      const focused = await assertHeldPosition(page)
+      await page.keyboard.press('Tab')
+      await assertMarqueeResumed(page, focused)
       const canvas = await page.locator('.network-canvas canvas').elementHandle()
       await page.evaluate(() => scrollTo(0, 0))
       const alternate = theme === 'light' ? 'dark' : 'light'
@@ -184,7 +278,7 @@ try {
           .evaluate((el) => getComputedStyle(el).flexWrap),
         'wrap',
       )
-      assert.ok(await page.getByRole('button', { name: 'Pause technology marquee' }).isDisabled())
+      assert.equal(await page.locator('.technology-marquee button').count(), 0)
       await page.waitForFunction(
         () => document.querySelector('.network-canvas').dataset.rendering === 'paused',
       )
@@ -227,7 +321,7 @@ try {
         )
       }
       results.push(
-        `${theme} ${width}px: system preference, in-place 3D update, saved choice/reload, marquee controls/hover/focus, reduced motion, dialogs, axe accessibility`,
+        `${theme} ${width}px: system preference, in-place 3D update, saved choice/reload, ${width === 360 ? 'real touch hold/release, native touch scroll/cancel, outside pointer release/cancel' : 'mouse hover/leave'}, keyboard focus, unchanged marquee position on resume, reduced motion, dialogs, axe accessibility`,
       )
       await context.close()
     }
