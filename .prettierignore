@@ -1,0 +1,7 @@
+node_modules
+dist
+.private
+.qa
+package-lock.json
+assets
+public
