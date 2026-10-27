@@ -47,6 +47,22 @@ export const profile = {
 
 export const navigation = ['About', 'Skills', 'Projects', 'Achievements', 'Contact']
 
+export const technologies = [
+  { name: 'PHP', icon: 'php' },
+  { name: 'Laravel', icon: 'laravel' },
+  { name: 'HTML', icon: 'html5' },
+  { name: 'CSS', icon: 'css3' },
+  { name: 'JavaScript', icon: 'javascript' },
+  { name: 'React', icon: 'react' },
+  { name: 'C#', icon: 'csharp' },
+  { name: '.NET', icon: 'dotnetcore' },
+  { name: 'MySQL', icon: 'mysql' },
+  { name: 'Microsoft SQL Server', icon: 'microsoftsqlserver' },
+  { name: 'MongoDB', icon: 'mongodb' },
+  { name: 'Git', icon: 'git' },
+  { name: 'GitHub', icon: 'github' },
+]
+
 export const skills = [
   {
     number: '01',

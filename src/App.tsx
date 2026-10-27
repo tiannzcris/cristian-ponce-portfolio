@@ -19,6 +19,7 @@ import { certificates, profile, projects, skills } from './content'
 import type { Certificate, Project } from './content'
 import Navigation from './components/Navigation'
 import HeroVisual from './components/HeroVisual'
+import TechnologyMarquee from './components/TechnologyMarquee'
 import CertificateDialog from './components/CertificateDialog'
 import useAnimations from './hooks/useAnimations'
 
@@ -154,6 +155,8 @@ export default function App() {
             </span>
           </div>
         </section>
+
+        <TechnologyMarquee />
 
         <section
           id="about"

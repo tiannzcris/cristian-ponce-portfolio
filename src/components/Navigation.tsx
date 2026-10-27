@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { navigation } from '../content'
+import ThemeToggle from './ThemeToggle'
 
 export default function Navigation() {
   const [open, setOpen] = useState(false)
@@ -51,16 +52,6 @@ export default function Navigation() {
           <span className="wordmark-line" />
           <span className="wordmark-label">CRISTIAN N. PONCE</span>
         </a>
-        <button
-          ref={toggle}
-          className="menu-toggle icon-button"
-          aria-expanded={open}
-          aria-controls="primary-navigation"
-          aria-label={open ? 'Close navigation' : 'Open navigation'}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X /> : <Menu />}
-        </button>
         <nav
           id="primary-navigation"
           className={`primary-nav ${open ? 'is-open' : ''}`}
@@ -77,6 +68,19 @@ export default function Navigation() {
             </a>
           ))}
         </nav>
+        <div className="navigation-actions">
+          <ThemeToggle />
+          <button
+            ref={toggle}
+            className="menu-toggle icon-button"
+            aria-expanded={open}
+            aria-controls="primary-navigation"
+            aria-label={open ? 'Close navigation' : 'Open navigation'}
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
     </header>
   )

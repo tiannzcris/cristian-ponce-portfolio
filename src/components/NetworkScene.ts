@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { currentTheme, subscribeTheme } from '../theme'
 
 export type NetworkController = { setPaused: (paused: boolean) => void; dispose: () => void }
 
@@ -21,7 +22,6 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)')
   const pointerDevice = window.matchMedia('(hover: hover) and (pointer: fine)')
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, small ? 1.25 : 1.6))
-  renderer.setClearColor(0x000000, 0)
   renderer.outputColorSpace = THREE.SRGBColorSpace
   host.appendChild(canvas)
   const scene = new THREE.Scene()
@@ -34,7 +34,6 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   const shell = new THREE.Mesh(
     geometry,
     new THREE.MeshPhysicalMaterial({
-      color: 0x192f5c,
       metalness: 0.65,
       roughness: 0.34,
       transparent: true,
@@ -45,7 +44,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   sculpture.add(shell)
   const edges = new THREE.LineSegments(
     new THREE.EdgesGeometry(geometry),
-    new THREE.LineBasicMaterial({ color: 0x6f96f0, transparent: true, opacity: 0.48 }),
+    new THREE.LineBasicMaterial({ transparent: true, opacity: 0.48 }),
   )
   sculpture.add(edges)
 
@@ -56,11 +55,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
     unique.set(`${vector.x.toFixed(3)},${vector.y.toFixed(3)},${vector.z.toFixed(3)}`, vector)
   }
   const nodeGeometry = new THREE.SphereGeometry(0.025, 8, 6)
-  const nodes = new THREE.InstancedMesh(
-    nodeGeometry,
-    new THREE.MeshBasicMaterial({ color: 0xa6d6ff }),
-    unique.size,
-  )
+  const nodes = new THREE.InstancedMesh(nodeGeometry, new THREE.MeshBasicMaterial(), unique.size)
   const matrix = new THREE.Matrix4()
   Array.from(unique.values()).forEach((position, i) => {
     matrix.makeTranslation(position.x, position.y, position.z)
@@ -71,18 +66,17 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   // Three orbital planes represent the connected web, mobile and desktop disciplines.
   const rings = new THREE.Group()
   const satellites: THREE.Mesh[] = []
-  const colors = [0x96bbff, 0xa99af0, 0x85dde7]
   for (let i = 0; i < 3; i++) {
     const orbit = new THREE.Group()
     orbit.rotation.set(0.8 + i * 0.65, 0.25 + i * 0.5, i * 1.05)
     const ring = new THREE.Mesh(
       new THREE.TorusGeometry(1.83 + i * 0.13, 0.006, 4, small ? 80 : 128),
-      new THREE.MeshBasicMaterial({ color: colors[i], transparent: true, opacity: 0.58 }),
+      new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.58 }),
     )
     orbit.add(ring)
     const satellite = new THREE.Mesh(
       new THREE.SphereGeometry(0.055, 12, 8),
-      new THREE.MeshBasicMaterial({ color: colors[i] }),
+      new THREE.MeshBasicMaterial(),
     )
     satellite.position.set(1.83 + i * 0.13, 0, 0)
     orbit.add(satellite)
@@ -93,15 +87,16 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   const coreGeometry = new THREE.OctahedronGeometry(0.65)
   const core = new THREE.LineSegments(
     new THREE.EdgesGeometry(coreGeometry),
-    new THREE.LineBasicMaterial({ color: 0xc5ceff, transparent: true, opacity: 0.8 }),
+    new THREE.LineBasicMaterial({ transparent: true, opacity: 0.8 }),
   )
   coreGeometry.dispose()
   sculpture.add(core)
-  scene.add(new THREE.AmbientLight(0x819bdb, 2))
-  const blue = new THREE.DirectionalLight(0x779dff, 6)
+  const ambient = new THREE.AmbientLight(undefined, 2)
+  scene.add(ambient)
+  const blue = new THREE.DirectionalLight(undefined, 6)
   blue.position.set(-3, 3, 5)
   scene.add(blue)
-  const lavender = new THREE.DirectionalLight(0xc0a3ff, 4)
+  const lavender = new THREE.DirectionalLight(undefined, 4)
   lavender.position.set(3, -2, 2)
   scene.add(lavender)
 
@@ -114,12 +109,40 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   }
   const starGeometry = new THREE.BufferGeometry()
   starGeometry.setAttribute('position', new THREE.BufferAttribute(stars, 3))
-  scene.add(
-    new THREE.Points(
-      starGeometry,
-      new THREE.PointsMaterial({ color: 0x9baecf, size: 0.013, transparent: true, opacity: 0.55 }),
-    ),
-  )
+  const starMaterial = new THREE.PointsMaterial({
+    size: 0.013,
+    transparent: true,
+    opacity: 0.55,
+  })
+  scene.add(new THREE.Points(starGeometry, starMaterial))
+
+  function updatePalette() {
+    const styles = getComputedStyle(document.documentElement)
+    const color = (name: string) => styles.getPropertyValue(`--scene-${name}`).trim()
+    const light = currentTheme() === 'light'
+    renderer.setClearColor(styles.getPropertyValue('--bg').trim(), 0)
+    shell.material.color.set(color('shell'))
+    shell.material.opacity = light ? 0.34 : 0.65
+    edges.material.color.set(color('line'))
+    edges.material.opacity = light ? 0.65 : 0.48
+    nodes.material.color.set(color('node'))
+    core.material.color.set(color('core'))
+    starMaterial.color.set(color('star'))
+    starMaterial.opacity = light ? 0.7 : 0.55
+    rings.children.forEach((orbit, index) =>
+      orbit.children.forEach((object) => {
+        if (object instanceof THREE.Mesh)
+          (object.material as THREE.MeshBasicMaterial).color.set(color(`orbit-${index + 1}`))
+      }),
+    )
+    ambient.color.set(color('ambient'))
+    blue.color.set(color('key'))
+    lavender.color.set(color('fill'))
+    host.dataset.theme = currentTheme()
+    // Repaint the same scene even when motion is paused; never create another loop.
+    if (!disposed && !lost && visible && !document.hidden) renderer.render(scene, camera)
+  }
+  const unsubscribeTheme = subscribeTheme(updatePalette)
 
   let paused = motion.matches
   let visible = true
@@ -151,6 +174,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   function sync() {
     if (disposed || lost) return
     const shouldRun = visible && !document.hidden && !paused
+    if (!shouldRun && visible && !document.hidden) renderer.render(scene, camera)
     if (shouldRun === running) return
     running = shouldRun
     host.dataset.rendering = shouldRun ? 'active' : 'paused'
@@ -164,7 +188,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
     camera.aspect = width / height
     camera.updateProjectionMatrix()
     renderer.setSize(width, height, false)
-    renderer.render(scene, camera)
+    if (visible && !document.hidden) renderer.render(scene, camera)
   }
   function move(event: PointerEvent) {
     if (!pointerDevice.matches || paused) return
@@ -198,6 +222,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   host.addEventListener('pointerleave', leave)
   canvas.addEventListener('webglcontextlost', contextLost)
   resize()
+  updatePalette()
   draw(0)
   host.dataset.rendering = 'paused'
   sync()
@@ -209,6 +234,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
     },
     dispose() {
       disposed = true
+      unsubscribeTheme()
       renderer.setAnimationLoop(null)
       observer.disconnect()
       resizeObserver.disconnect()

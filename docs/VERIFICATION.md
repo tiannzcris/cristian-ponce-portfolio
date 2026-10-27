@@ -1,5 +1,21 @@
 # Verification record
 
+## Light/dark theme and marquee update
+
+The update adds shared semantic color palettes, accessible sun/moon navigation controls, device-preference defaults, persisted explicit choices, startup theme selection before React loads, in-place Three.js material updates, and thirteen local SVG technology logos in a continuous strip.
+
+`npm run test:themes` verifies light and dark at 360px and 1440px, theme persistence after reload, explicit choices overriding device preference, correct startup backgrounds while the React module is blocked, and a single reused 3D canvas. It also checks marquee pause/resume, hover/focus pause, a single accessible list of thirteen names, static wrapping lists and paused 3D under reduced motion, full-image certificate dialogs with focus return, and automated axe WCAG A/AA checks in both themes. A 3840px test confirms complete marquee coverage, consistent item gaps, one animation, and less than one pixel of position difference across the loop boundary. Blocked localStorage and unavailable WebGL are tested together in both palettes. No browser exceptions, console errors, or broken local resources were found.
+
+The existing browser suite also passes across 360px, 390px, 768px, 1024px, and 1440px, including all six certificate viewers, navigation, image loading, reduced motion, offscreen/hidden-tab rendering, and WebGL fallback. Theme-specific screenshots and the machine-readable report are kept under `.qa/themes/`. No content images, certificates, portrait processing, or project URLs were changed.
+
+Changed files for this update:
+
+- Theme startup and styling: `index.html`, `src/main.tsx`, `src/theme.ts`, `src/themes.css`, `src/styles.css`.
+- Components and placement: `src/App.tsx`, `src/components/Navigation.tsx`, `src/components/ThemeToggle.tsx`, `src/components/HeroVisual.tsx`, `src/components/NetworkScene.ts`, `src/components/TechnologyMarquee.tsx`.
+- Technology content/assets: `src/content.ts`, thirteen SVGs and `LICENSE.txt` under `public/icons/technologies/`.
+- Generation/checks/configuration: `scripts/prepare-tech-icons.mjs`, `scripts/verify-themes.mjs`, `eslint.config.js`, `package.json`, `package-lock.json`.
+- Documentation: `README.md`, `docs/ASSETS.md`, `docs/VERIFICATION.md`.
+
 Verified locally on October 27, 2026 with Node.js 22.19.0, npm, and installed Chrome through Playwright. The site has not been pushed or deployed.
 
 ## Build and source checks

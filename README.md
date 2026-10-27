@@ -29,6 +29,7 @@ With the production preview running, run:
 
 ```sh
 npm run test:browser
+npm run test:themes
 ```
 
 The Playwright test uses installed Google Chrome by default. Set `PLAYWRIGHT_CHANNEL=msedge` to use Microsoft Edge instead. Set `PORTFOLIO_TEST_URL` to test a different local URL. Screenshots and the verification report go to the Git-ignored `.qa/` directory.
@@ -37,6 +38,14 @@ The checks cover 360px, 390px, 768px, 1024px and 1440px layouts, overflow, image
 
 `node scripts/inspect-projects.mjs` performs read-only visits to the three project URLs and saves screenshots and page text under `.qa/projects/`. It never logs in or submits anything.
 
+The theme suite checks light/dark at 360px and 1440px, stored choices after reload, pre-React startup colors, theme updates on the existing 3D canvas, blocked storage, both static fallbacks, marquee controls/hover/focus, a gap-free 3840px loop, reduced motion, and dialogs. Theme screenshots and its report are saved in `.qa/themes/`.
+
+## Themes and technology strip
+
+The sun/moon control stays available in desktop and mobile navigation. On first visit the palette follows `prefers-color-scheme`; an explicit choice is stored under `cnp-theme`. With no saved choice, later device preference changes are followed too. The small inline head script selects the theme before styles and React load. Storage failures fall back to an in-memory choice. All website colors are shared CSS variables in `src/themes.css`, including the SVG fallback and the material palette read by Three.js. Theme changes update existing materials and repaint paused scenes without replacing the canvas or starting a second rendering loop.
+
+The technology strip follows the hero and preserves the categorized Skills section. Its content lives in `technologies` in `src/content.ts`. It uses locally served SVG masks with theme-aware colors, two matching visual groups, and enough sequence copies to fill any measured viewport. One linear Web Animation traverses exactly one group's width, retaining its phase on sizing updates. The control, hover, and focus pause it; focus/hover must leave the strip before an unpaused animation continues. Reduced-motion users see the single accessible list as a static wrapping layout. Visual duplicates are hidden from assistive technology. Logo files are generated at development time and never fetched from external icon services at runtime.
+
 ## Structure and content
 
 - `src/content.ts`: typed profile, navigation, skills, projects, certificate records, dates, image paths, and social links.
@@ -44,6 +53,9 @@ The checks cover 360px, 390px, 768px, 1024px and 1440px layouts, overflow, image
 - `src/components/`: navigation, accessible native certificate dialog, hero illustration, and Three.js scene.
 - `src/hooks/useAnimations.ts`: scoped GSAP animations with cleanup and reduced-motion handling.
 - `src/styles.css`: design tokens, layouts, interaction states, and responsive styling.
+- `src/themes.css` and `src/theme.ts`: shared light/dark palettes, startup preference handling, persistence, and theme subscriptions.
+- `src/components/TechnologyMarquee.tsx`: continuous technology strip, pause controls, and reduced-motion list.
+- `public/icons/technologies/`: thirteen local Devicon SVGs plus their MIT attribution. Regenerate with `node scripts/prepare-tech-icons.mjs`.
 - `public/images/`: optimized images actually served to visitors.
 - `assets/originals/`: retained non-sensitive certificate and screenshot sources, outside the public/build directory.
 - `docs/ASSETS.md`: original filename mapping, redaction notes, and project verification details.

@@ -4,6 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0c12" />
+    <script>
+      // Resolve the palette before CSS and React load, including when storage is blocked.
+      ;(() => {
+        let saved
+        try {
+          saved = localStorage.getItem('cnp-theme')
+        } catch {
+          /* Device preference is enough. */
+        }
+        const theme =
+          saved === 'light' || saved === 'dark'
+            ? saved
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+        document.documentElement.dataset.theme = theme
+        document.querySelector('meta[name="theme-color"]').content =
+          theme === 'dark' ? '#0a0c12' : '#f7f8fc'
+      })()
+    </script>
+    <style>
+      html {
+        color-scheme: light;
+        --bg: #f7f8fc;
+        --text: #18233b;
+        background: var(--bg);
+        color: var(--text);
+      }
+      html[data-theme='dark'] {
+        color-scheme: dark;
+        --bg: #0a0c12;
+        --text: #eef0f6;
+      }
+    </style>
     <title>Cristian N. Ponce — Aspiring Software Developer</title>
     <meta
       name="description"
@@ -31,15 +65,17 @@
   <body>
     <div id="root"></div>
     <noscript
-      ><main style="padding: 3rem; background: #0a0c12; color: #f1f1f5; font-family: system-ui">
+      ><main
+        style="padding: 3rem; background: var(--bg); color: var(--text); font-family: system-ui"
+      >
         <h1>Cristian N. Ponce</h1>
         <p>Aspiring Software Developer. Building ideas into practical digital experiences.</p>
         <p>
           Enable JavaScript to explore my projects and certificates, or connect on
-          <a style="color: #a8beff" href="https://www.linkedin.com/in/cristian-ponce-8485ab426/"
+          <a style="color: inherit" href="https://www.linkedin.com/in/cristian-ponce-8485ab426/"
             >LinkedIn</a
           >
-          and <a style="color: #a8beff" href="https://github.com/tiannzcris">GitHub</a>.
+          and <a style="color: inherit" href="https://github.com/tiannzcris">GitHub</a>.
         </p>
       </main></noscript
     >

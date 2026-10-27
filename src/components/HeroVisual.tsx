@@ -14,15 +14,22 @@ function StaticNetwork() {
     <svg className="static-network" viewBox="0 0 600 560" aria-hidden="true">
       <defs>
         <radialGradient id="orb-fill">
-          <stop stopColor="#4669c3" stopOpacity=".45" />
-          <stop offset="1" stopColor="#152033" stopOpacity=".2" />
+          <stop stopColor="var(--scene-shell)" stopOpacity=".45" />
+          <stop offset="1" stopColor="var(--bg)" stopOpacity=".2" />
         </radialGradient>
         <linearGradient id="orb-line">
-          <stop stopColor="#77b7ff" />
-          <stop offset="1" stopColor="#c2aeff" />
+          <stop stopColor="var(--scene-orbit-1)" />
+          <stop offset="1" stopColor="var(--scene-orbit-2)" />
         </linearGradient>
       </defs>
-      <circle cx="300" cy="280" r="155" fill="url(#orb-fill)" stroke="#799af5" strokeOpacity=".4" />
+      <circle
+        cx="300"
+        cy="280"
+        r="155"
+        fill="url(#orb-fill)"
+        stroke="var(--scene-line)"
+        strokeOpacity=".4"
+      />
       <g fill="none" stroke="url(#orb-line)" strokeWidth="1" opacity=".65">
         <ellipse cx="300" cy="280" rx="225" ry="85" transform="rotate(-30 300 280)" />
         <ellipse cx="300" cy="280" rx="205" ry="86" transform="rotate(55 300 280)" />
@@ -41,14 +48,14 @@ function StaticNetwork() {
           cx={n.x}
           cy={n.y}
           r={i % 3 === 0 ? 4 : 2.5}
-          fill={i % 2 ? '#a8b6ff' : '#94ebf8'}
+          fill={i % 2 ? 'var(--scene-node)' : 'var(--scene-orbit-3)'}
         />
       ))}
       <path
         d="m300 240 36 20v40l-36 20-36-20v-40z m-36 20 36 20 36-20 m-36 20v40"
-        fill="#9caeff"
+        fill="var(--scene-core)"
         fillOpacity=".08"
-        stroke="#b9c9ff"
+        stroke="var(--scene-core)"
       />
     </svg>
   )

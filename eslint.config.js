@@ -22,7 +22,7 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
-    files: ['scripts/verify.mjs', 'scripts/inspect-projects.mjs'],
+    files: ['scripts/verify*.mjs', 'scripts/inspect-projects.mjs'],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
   },
 )
