@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { navigation } from '../content'
 import ThemeToggle from './ThemeToggle'
 
-export default function Navigation() {
-  const [open, setOpen] = useState(false)
+export default function Navigation({
+  open,
+  onMenuChange: setOpen,
+}: {
+  open: boolean
+  onMenuChange: (open: boolean) => void
+}) {
   const toggle = useRef<HTMLButtonElement>(null)
   const header = useRef<HTMLElement>(null)
 
@@ -31,7 +36,7 @@ export default function Navigation() {
       document.removeEventListener('pointerdown', outside)
       desktop.removeEventListener('change', onResize)
     }
-  }, [open])
+  }, [open, setOpen])
 
   function navigate(id: string) {
     setOpen(false)

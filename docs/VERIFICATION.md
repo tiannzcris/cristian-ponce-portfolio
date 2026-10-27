@@ -1,5 +1,29 @@
 # Verification record
 
+## Experience categories and expanded marquee
+
+The central content now separates the Laravel, .NET, and MERN web stacks, Flutter/Dart mobile experience, PHP/Laravel/NativePHP desktop experience, and Git/GitHub tools. Laravel is described as a framework and .NET as a platform. Networking and cybersecurity remain learning interests. Profile wording and Skills use these categories; named project content, tags, links, portrait assets, and certificates are unchanged.
+
+The marquee now has nineteen unique accessible names, seventeen local SVG logos, and clear text labels for ASP.NET MVC and NativePHP. Express, Node.js, Flutter, and Dart logos come from the already installed Devicon packages. The existing theme browser suite passed at 360px and 1440px in both palettes, including all logo responses, controls, hover/focus pause, reduced motion, theme persistence, dialogs, and axe checks. Its 3840px test passed full coverage, consistent spacing, one animation, and less than one pixel of difference across the loop boundary. No browser exceptions, console errors, or broken local resources were found.
+
+The general browser regression suite also passed across 360px, 390px, 768px, 1024px, and 1440px, including navigation, every certificate dialog, image loading, the 3D hero, and WebGL fallback. The updated Skills and static technology list were visually reviewed in light/mobile and dark/desktop renders; text wraps cleanly and all nineteen technology names are readable. Production still has no audio element. Review captures are retained locally at `.qa/skills-*.png` and `.qa/technologies-*.png`.
+
+TypeScript, lint, and the production build passed. The existing lazy Three.js shared chunk still triggers Vite's advisory for chunks over 500 kB (approximately 134 kB gzipped). The asset check passed and confirmed the local test MP3 remains excluded from production output. No commit, push, or deployment was performed.
+
+Changed for this update: `src/content.ts`, `src/App.tsx`, `src/components/TechnologyMarquee.tsx`, `src/styles.css`, `scripts/prepare-tech-icons.mjs`, `scripts/verify-themes.mjs`, four SVGs under `public/icons/technologies/`, `README.md`, `docs/ASSETS.md`, and this record. Companion and music source/configuration are preserved.
+
+## Procedural 3D companion and private local audio
+
+The active companion is made from 57 real Three.js meshes with 11 shared materials and 14 geometries. Model checks passed for independent joints, a seamless base dance cycle, wave/blink behavior, grounded stepping, sampled desktop/mobile camera bounds over 20 seconds, and disposal of every owned material and geometry. Sampled foot clearance remained between approximately 0.0003 and 0.0385 units above the ground.
+
+Actual Chrome renders were inspected at desktop and mobile sizes in both light and dark themes, including enlarged detail views. The companion browser suite passed automatic movement, mouse/keyboard greeting followed by a return to dancing, pause/hide/restore, inactive-tab suspension, certificate and mobile-menu suppression, reduced-motion first visit and explicit movement opt-in, existing-canvas theme updates, no-WebGL fallback, and automated axe checks. There were no page exceptions or console errors in these companion runs. Actual WebGL draw calls were monitored to confirm the paused character issues no draws; this avoids mistaking the animated hero visible through the transparent canvas for character movement.
+
+The audio suite passed against local development with the supplied `public/audio/background.mp3`: no autoplay, explicit Play/Pause, mute, volume adjustment, no playback after reload, and graceful hidden-player behavior for a simulated missing file. Production had no audio element, no music controls, and no track requests. The test MP3 was not Git-tracked, was covered by both ignore files, and was absent from the completed production artifact. No public-use track is configured.
+
+The existing portfolio and theme browser suites also passed after integration, including all certificate dialogs, mobile navigation, five responsive widths, saved color preference and startup behavior, static WebGL fallbacks, and the wide-screen marquee. Final docking checks cover all sections: the companion avoids interactive controls and temporarily stows for the dense certificate list and footer, restoring its previous state when those areas leave view.
+
+See [companion and audio implementation notes](COMPANION.md) for the GLB adapter contract and development configuration. Screenshots and the companion browser report are retained in ignored `.qa/companion/`. The original portrait and portfolio content assets are unchanged.
+
 ## Light/dark theme and marquee update
 
 The update adds shared semantic color palettes, accessible sun/moon navigation controls, device-preference defaults, persisted explicit choices, startup theme selection before React loads, in-place Three.js material updates, and thirteen local SVG technology logos in a continuous strip.

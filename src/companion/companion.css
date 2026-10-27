@@ -1,0 +1,146 @@
+@layer components {
+  .companion-dock {
+    position: fixed;
+    bottom: calc(var(--dock-bottom, 12px) + env(safe-area-inset-bottom, 0px));
+    right: calc(var(--dock-right, 12px) + env(safe-area-inset-right, 0px));
+    width: 156px;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .companion-dock[hidden],
+  .companion-dock [hidden],
+  .music-player[hidden] {
+    display: none !important;
+  }
+  .companion-stage {
+    height: 188px;
+    position: relative;
+  }
+  .companion-canvas,
+  .companion-fallback {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+  }
+  .companion-canvas canvas {
+    display: block;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+  }
+  .companion-ready .companion-canvas canvas {
+    opacity: 1;
+  }
+  .companion-ready .companion-fallback {
+    visibility: hidden;
+  }
+  .companion-greet {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    background: transparent;
+    pointer-events: auto;
+    clip-path: polygon(
+      30% 5%,
+      70% 5%,
+      83% 23%,
+      98% 35%,
+      91% 60%,
+      77% 75%,
+      74% 95%,
+      27% 95%,
+      24% 75%,
+      10% 64%,
+      12% 39%,
+      20% 21%
+    );
+    touch-action: manipulation;
+  }
+  .companion-greet:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+  .companion-greet:focus-visible {
+    outline: none;
+    background: var(--tint);
+  }
+  .companion-stage:has(.companion-greet:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: -3px;
+    border-radius: 16px;
+  }
+  .companion-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    margin: 0 auto;
+    padding: 2px;
+    gap: 1px;
+    border-radius: 30px;
+    background: var(--header-bg);
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 3px 14px var(--shadow);
+    pointer-events: auto;
+  }
+  .companion-controls .icon-button {
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border-radius: 50%;
+    color: var(--text-strong);
+  }
+  .companion-controls .icon-button:hover {
+    background: var(--icon-hover);
+  }
+  .companion-controls .icon-button:disabled {
+    color: var(--subtle);
+    cursor: default;
+  }
+  .companion-restore {
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    pointer-events: auto;
+    background: var(--header-bg);
+    border: 1px solid var(--line-strong);
+    box-shadow: 0 3px 14px var(--shadow);
+    border-radius: 50%;
+  }
+  .music-player {
+    position: fixed;
+    left: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--header-bg);
+    padding: 4px 10px 4px 4px;
+    border: 1px solid var(--line-strong);
+    border-radius: 26px;
+    z-index: 20;
+  }
+  .music-player .icon-button {
+    border-radius: 50%;
+  }
+  .music-player input {
+    width: 70px;
+    accent-color: var(--accent);
+  }
+}
+@layer responsive {
+  @media (max-width: 650px) {
+    .companion-dock {
+      width: 108px;
+    }
+    .companion-stage {
+      height: 120px;
+    }
+    .companion-controls .icon-button {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}

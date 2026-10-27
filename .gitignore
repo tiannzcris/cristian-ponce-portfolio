@@ -10,3 +10,4 @@ dist/
 !.env.example
 npm-debug.log*
 .DS_Store
+public/audio/background.mp3

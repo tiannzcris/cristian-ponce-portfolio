@@ -2,6 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { Pause, Play } from 'lucide-react'
 import { technologies } from '../content'
+import type { Technology } from '../content'
+
+function TechnologyLogo({ technology }: { technology: Technology }) {
+  if (!technology.icon) return null
+  return (
+    <span
+      className={`technology-logo technology-${technology.icon}`}
+      style={{ '--logo': `url('/icons/technologies/${technology.icon}.svg')` } as CSSProperties}
+      aria-hidden="true"
+    />
+  )
+}
 
 export default function TechnologyMarquee() {
   const viewport = useRef<HTMLDivElement>(null)
@@ -72,11 +84,8 @@ export default function TechnologyMarquee() {
   }, [repetitions, reduced])
 
   const items = technologies.map((technology) => (
-    <span className="technology-item" key={technology.icon}>
-      <span
-        className={`technology-logo technology-${technology.icon}`}
-        style={{ '--logo': `url('/icons/technologies/${technology.icon}.svg')` } as CSSProperties}
-      />
+    <span className="technology-item" key={technology.name}>
+      <TechnologyLogo technology={technology} />
       <span>{technology.name}</span>
     </span>
   ))
@@ -109,14 +118,8 @@ export default function TechnologyMarquee() {
       </div>
       <ul className="technology-accessible-list" role="list" aria-label="Technologies I work with">
         {technologies.map((technology) => (
-          <li key={technology.icon}>
-            <span
-              className={`technology-logo technology-${technology.icon}`}
-              style={
-                { '--logo': `url('/icons/technologies/${technology.icon}.svg')` } as CSSProperties
-              }
-              aria-hidden="true"
-            />
+          <li key={technology.name}>
+            <TechnologyLogo technology={technology} />
             {technology.name}
           </li>
         ))}

@@ -1,9 +1,26 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { rmSync } from 'node:fs'
+import { resolve } from 'node:path'
+import type { ResolvedConfig } from 'vite'
+
+let outputDirectory: string | undefined
 
 export default defineConfig({
   plugins: [
     react(),
+    {
+      name: 'exclude-private-development-audio',
+      apply: 'build',
+      configResolved(config: ResolvedConfig) {
+        outputDirectory = resolve(config.root, config.build.outDir)
+      },
+      closeBundle() {
+        // Vite copies public/ independently of tree shaking: remove this private test asset.
+        if (outputDirectory)
+          rmSync(resolve(outputDirectory, 'audio/background.mp3'), { force: true })
+      },
+    },
     {
       name: 'real-site-metadata',
       transformIndexHtml(html) {

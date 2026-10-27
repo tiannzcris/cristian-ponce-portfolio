@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import {
   ArrowDown,
   ArrowDownRight,
@@ -15,13 +15,15 @@ import {
   Sparkles,
   Trophy,
 } from 'lucide-react'
-import { certificates, profile, projects, skills } from './content'
+import { certificates, learningInterests, profile, projects, skills } from './content'
 import type { Certificate, Project } from './content'
 import Navigation from './components/Navigation'
 import HeroVisual from './components/HeroVisual'
 import TechnologyMarquee from './components/TechnologyMarquee'
 import CertificateDialog from './components/CertificateDialog'
 import useAnimations from './hooks/useAnimations'
+import PortfolioCompanion from './companion/PortfolioCompanion'
+import MusicPlayer from './components/MusicPlayer'
 
 function SectionLabel({ number, children }: { number: string; children: React.ReactNode }) {
   return (
@@ -104,6 +106,7 @@ function ProjectVisual({ project }: { project: Project }) {
 
 export default function App() {
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   useAnimations()
   const featured = projects[0]
   const champion = certificates[0]
@@ -112,7 +115,7 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <Navigation />
+      <Navigation open={mobileMenuOpen} onMenuChange={setMobileMenuOpen} />
       <main id="main">
         <section id="home" tabIndex={-1} className="hero container" aria-labelledby="hero-title">
           <div className="hero-main">
@@ -242,6 +245,7 @@ export default function App() {
                   <span className="skill-number">{skill.number}</span>
                   <div>
                     <h3>{skill.title}</h3>
+                    {skill.description && <p className="skill-context">{skill.description}</p>}
                     <div className="skill-items">
                       {skill.items.map((item) => (
                         <span key={item}>{item}</span>
@@ -254,9 +258,14 @@ export default function App() {
               <div className="exploring-row" data-reveal>
                 <Network size={20} />
                 <div>
-                  <span className="eyebrow">CURRENTLY EXPLORING</span>
+                  <span className="eyebrow">{learningInterests.title}</span>
                   <p>
-                    Networking <span>·</span> Cybersecurity
+                    {learningInterests.items.map((interest, index) => (
+                      <Fragment key={interest}>
+                        {index > 0 && <span>·</span>}
+                        {interest}
+                      </Fragment>
+                    ))}
                   </p>
                 </div>
                 <Sparkles size={16} />
@@ -495,6 +504,8 @@ export default function App() {
           </a>
         </div>
       </footer>
+      <PortfolioCompanion suppressed={Boolean(selectedCertificate) || mobileMenuOpen} />
+      <MusicPlayer suppressed={Boolean(selectedCertificate) || mobileMenuOpen} />
       {selectedCertificate && (
         <CertificateDialog
           certificate={selectedCertificate}

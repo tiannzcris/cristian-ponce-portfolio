@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { currentTheme, subscribeTheme } from '../theme'
+import { isRendering, setRendering } from '../companion/renderBudget'
 
 export type NetworkController = { setPaused: (paused: boolean) => void; dispose: () => void }
 
@@ -156,9 +157,11 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   let lastDraw = 0
   function draw(time: number) {
     if (disposed || lost) return
+    const fps = isRendering('companion') ? (small ? 24 : 30) : small ? 30 : 60
+    host.dataset.fps = String(fps)
+    if (time - lastDraw < 1000 / fps) return
     const delta = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0
     previousTime = time
-    if (small && time - lastDraw < 1000 / 30) return
     lastDraw = time
     elapsed += delta
     sculpture.rotation.y += (0.3 + pointerX * 0.18 + elapsed * 0.065 - sculpture.rotation.y) * 0.035
@@ -177,6 +180,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
     if (!shouldRun && visible && !document.hidden) renderer.render(scene, camera)
     if (shouldRun === running) return
     running = shouldRun
+    setRendering('hero', shouldRun)
     host.dataset.rendering = shouldRun ? 'active' : 'paused'
     previousTime = 0
     renderer.setAnimationLoop(shouldRun ? draw : null)
@@ -203,6 +207,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
   function contextLost(event: Event) {
     event.preventDefault()
     lost = true
+    setRendering('hero', false)
     renderer.setAnimationLoop(null)
     host.dataset.rendering = 'unavailable'
     onFailure()
@@ -234,6 +239,7 @@ export function createNetwork(host: HTMLElement, onFailure: () => void): Network
     },
     dispose() {
       disposed = true
+      setRendering('hero', false)
       unsubscribeTheme()
       renderer.setAnimationLoop(null)
       observer.disconnect()

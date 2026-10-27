@@ -24,14 +24,24 @@ export type Certificate = {
   alt: string
 }
 
+export type Technology = { name: string; icon?: string }
+
+export type SkillGroup = {
+  number: string
+  title: string
+  description?: string
+  items: string[]
+}
+
 export const profile = {
   name: 'Cristian N. Ponce',
   title: 'Aspiring Software Developer',
   headline: 'Building ideas into practical digital experiences.',
   introduction:
-    'I’m Cristian, a BSIT student developing web, mobile, and desktop applications—and exploring the networks that connect them.',
+    'I’m Cristian, a BSIT student developing web, mobile, and desktop applications, with learning interests in networking and cybersecurity.',
   about: [
-    'I’m Cristian N. Ponce, a fourth-year BS Information Technology student with experience developing web, mobile, and desktop applications. I enjoy turning ideas into practical applications and expanding my skills across different technologies.',
+    'I’m Cristian N. Ponce, a fourth-year BS Information Technology student. I enjoy turning ideas into practical applications and expanding my skills across different technologies.',
+    'My web development experience spans the Laravel framework, the .NET platform with C# and ASP.NET MVC, and the MERN stack. I also develop mobile applications with Flutter and Dart, and desktop applications with PHP, Laravel, and NativePHP.',
     'I aim to build a freelance career in application development while deepening my knowledge of networking and cybersecurity. I’m also interested in opportunities in the maritime industry, where I hope to apply and expand my technical skills.',
   ],
   education: 'Infotech Development Systems Colleges, Inc.',
@@ -47,32 +57,60 @@ export const profile = {
 
 export const navigation = ['About', 'Skills', 'Projects', 'Achievements', 'Contact']
 
-export const technologies = [
+export const technologies: Technology[] = [
   { name: 'PHP', icon: 'php' },
   { name: 'Laravel', icon: 'laravel' },
+  { name: 'MySQL', icon: 'mysql' },
   { name: 'HTML', icon: 'html5' },
   { name: 'CSS', icon: 'css3' },
   { name: 'JavaScript', icon: 'javascript' },
-  { name: 'React', icon: 'react' },
   { name: 'C#', icon: 'csharp' },
   { name: '.NET', icon: 'dotnetcore' },
-  { name: 'MySQL', icon: 'mysql' },
+  { name: 'ASP.NET MVC' },
   { name: 'Microsoft SQL Server', icon: 'microsoftsqlserver' },
   { name: 'MongoDB', icon: 'mongodb' },
+  { name: 'Express', icon: 'express' },
+  { name: 'React', icon: 'react' },
+  { name: 'Node.js', icon: 'nodejs' },
+  { name: 'Flutter', icon: 'flutter' },
+  { name: 'Dart', icon: 'dart' },
+  { name: 'NativePHP' },
   { name: 'Git', icon: 'git' },
   { name: 'GitHub', icon: 'github' },
 ]
 
-export const skills = [
+export const skills: SkillGroup[] = [
   {
     number: '01',
-    title: 'Web development',
-    items: ['PHP', 'Laravel', 'HTML', 'CSS', 'JavaScript', 'React'],
+    title: 'Web — Laravel stack',
+    description: 'Web applications built with the Laravel PHP framework.',
+    items: ['PHP', 'Laravel', 'MySQL', 'HTML', 'CSS', 'JavaScript'],
   },
-  { number: '02', title: 'Application development', items: ['C#', '.NET', 'ASP.NET MVC'] },
-  { number: '03', title: 'Databases', items: ['MySQL', 'Microsoft SQL Server', 'MongoDB'] },
-  { number: '04', title: 'Stack experience', items: ['MERN'] },
+  {
+    number: '02',
+    title: 'Web — .NET stack',
+    description: 'Web development on the .NET platform using ASP.NET MVC.',
+    items: ['C#', 'ASP.NET MVC', 'Microsoft SQL Server'],
+  },
+  {
+    number: '03',
+    title: 'Web — MERN stack',
+    items: ['MongoDB', 'Express', 'React', 'Node.js'],
+  },
+  { number: '04', title: 'Mobile', items: ['Flutter', 'Dart'] },
+  {
+    number: '05',
+    title: 'Desktop',
+    description: 'Desktop applications using the Laravel framework with NativePHP.',
+    items: ['PHP', 'Laravel', 'NativePHP'],
+  },
+  { number: '06', title: 'Tools', items: ['Git', 'GitHub'] },
 ]
+
+export const learningInterests = {
+  title: 'Learning interests',
+  items: ['Networking', 'Cybersecurity'],
+}
 
 export const projects: Project[] = [
   {

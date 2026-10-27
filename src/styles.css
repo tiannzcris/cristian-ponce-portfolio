@@ -797,6 +797,12 @@
     font-size: 16px;
     letter-spacing: -0.025em;
   }
+  .skill-context {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+  }
   .skill-row > svg {
     margin-left: auto;
     color: var(--subtle);

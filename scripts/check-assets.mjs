@@ -40,6 +40,20 @@ if (original) {
     )
 }
 const ignored = await readFile('.gitignore', 'utf8')
+assert.ok(
+  ignored.split(/\r?\n/).includes('public/audio/background.mp3'),
+  'Private development audio must be Git-ignored',
+)
+assert.ok(
+  (await readFile('.vercelignore', 'utf8')).split(/\r?\n/).includes('public/audio/background.mp3'),
+  'Private development audio must be excluded from Vercel uploads',
+)
+assert.ok(
+  !(await files('dist')).some((file) =>
+    file.replaceAll('\\', '/').endsWith('/audio/background.mp3'),
+  ),
+  'Private test MP3 must not be present in a production build',
+)
 assert.ok(ignored.split(/\r?\n/).includes('.private/'))
 console.log(
   `Content asset references pass; ${publicFiles.length} public files checked; private original excluded from public/build and ignored by Git.`,

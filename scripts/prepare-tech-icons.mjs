@@ -14,6 +14,10 @@ const names = [
   'mysql',
   'microsoftsqlserver',
   'mongodb',
+  'express',
+  'nodejs',
+  'flutter',
+  'dart',
   'git',
   'github',
 ]

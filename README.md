@@ -2,6 +2,8 @@
 
 A responsive personal portfolio built with React 19, TypeScript, Vite, GSAP/ScrollTrigger, and a procedural Three.js hero. Static hosting only; no database, authentication, external models, or API keys.
 
+The portfolio also includes a procedural 3D chibi companion with dance/wave animation and accessible controls. See [companion architecture, controls, GLB replacement, and development-only music](docs/COMPANION.md). The local test MP3 is available only in development and excluded from Git, Vercel uploads, and production output.
+
 ## Local development
 
 Use Node.js **22.19 or newer** (Node 22 LTS recommended) and npm.
@@ -55,12 +57,14 @@ The technology strip follows the hero and preserves the categorized Skills secti
 - `src/styles.css`: design tokens, layouts, interaction states, and responsive styling.
 - `src/themes.css` and `src/theme.ts`: shared light/dark palettes, startup preference handling, persistence, and theme subscriptions.
 - `src/components/TechnologyMarquee.tsx`: continuous technology strip, pause controls, and reduced-motion list.
-- `public/icons/technologies/`: thirteen local Devicon SVGs plus their MIT attribution. Regenerate with `node scripts/prepare-tech-icons.mjs`.
+- `public/icons/technologies/`: seventeen local Devicon SVGs plus their MIT attribution. ASP.NET MVC and NativePHP use clear text labels, for nineteen technologies in total. Regenerate icons with `node scripts/prepare-tech-icons.mjs`.
 - `public/images/`: optimized images actually served to visitors.
 - `assets/originals/`: retained non-sensitive certificate and screenshot sources, outside the public/build directory.
 - `docs/ASSETS.md`: original filename mapping, redaction notes, and project verification details.
 
 Edit `src/content.ts` to update text, projects, skills, links, or certificates. Add an optimized screenshot to `public/images/projects/` and set its `image` and `imageAlt`; omitting `image` uses a typographic project cover. Repository links are intentionally absent because exact project repositories were not supplied or verified. No email, résumé, phone number, or contact form is fabricated.
+
+Skills are grouped into the Laravel, .NET, and MERN web stacks, Flutter/Dart mobile development, PHP/Laravel/NativePHP desktop development, and Git/GitHub tools. Laravel is identified as a framework and .NET as a platform. Networking and cybersecurity are separate learning interests. Flutter and NativePHP are not attributed to a named project without confirmed project content.
 
 The code camp screenshot is a real capture of its public page. The E-LIKAS and Windows Server images are the supplied local screenshots. All three project homepages were accessible during verification on October 27, 2026. E-LIKAS is described as a capstone system with project capabilities, without attributing every feature to Cristian. The other projects' technology stacks are not inferred. Future project availability and back-end behavior are outside this portfolio's control.
 

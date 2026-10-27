@@ -2,7 +2,7 @@
 
 ## Technology logos
 
-`public/icons/technologies/` contains thirteen local SVG assets for PHP, Laravel, HTML, CSS, JavaScript, React, C#, .NET, MySQL, Microsoft SQL Server, MongoDB, Git, and GitHub. The SVG data comes from the installed Devicon/Devicon Plain Iconify packages; `scripts/prepare-tech-icons.mjs` regenerates the files. These are CSS masks with theme-aware colors, so logos retain legibility in either palette. The Devicon MIT notice is included at `public/icons/technologies/LICENSE.txt`. Sources: [Devicon](https://github.com/devicons/devicon), [MIT license](https://github.com/devicons/devicon/blob/master/LICENSE).
+`public/icons/technologies/` contains seventeen local SVG assets for PHP, Laravel, HTML, CSS, JavaScript, React, C#, .NET, MySQL, Microsoft SQL Server, MongoDB, Express, Node.js, Flutter, Dart, Git, and GitHub. ASP.NET MVC and NativePHP use clear text labels in the marquee rather than an unverified logo. The SVG data comes from the installed Devicon/Devicon Plain Iconify packages; `scripts/prepare-tech-icons.mjs` regenerates the files. These are CSS masks with theme-aware colors, so logos retain legibility in either palette. The Devicon MIT notice is included at `public/icons/technologies/LICENSE.txt`. Sources: [Devicon](https://github.com/devicons/devicon), [MIT license](https://github.com/devicons/devicon/blob/master/LICENSE).
 
 Inspected visually on October 27, 2026. The filenames below map the user's supplied assets to their displayed content. Original non-sensitive files are retained under `assets/originals/`, and optimized public copies have descriptive names.
 

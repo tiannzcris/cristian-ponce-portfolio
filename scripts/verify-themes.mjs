@@ -108,7 +108,7 @@ try {
           .getByRole('list', { name: 'Technologies I work with' })
           .getByRole('listitem')
           .count(),
-        13,
+        19,
       )
       const logoStatus = await page.evaluate(async () => {
         const names = [
